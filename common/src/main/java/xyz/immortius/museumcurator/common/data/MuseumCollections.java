@@ -62,10 +62,12 @@ public final class MuseumCollections {
         for (CollectionItem candidate : candidates) {
             boolean match = true;
             if (!candidate.componentFilter().isEmpty()) {
-                for (Map.Entry<DataComponentType<?>, Optional<?>> entry : candidate.componentFilter().entrySet()) {
-                    if (entry.getValue().isPresent()) {
-                        Object data = entry.getValue().get();
-                        match = itemStack.getComponents().get(entry.getKey()) != null && data.equals(itemStack.getComponents().get(entry.getKey()));
+                for (DataComponentType<?> type : candidate.componentFilter().keySet()) {
+                    Object expected = candidate.componentFilter().getPatch(type);
+                    Object actual = itemStack.getComponents().get(type);
+                    match = Objects.equals(expected, actual);
+                    if (!match) {
+                        break;
                     }
                 }
             }
