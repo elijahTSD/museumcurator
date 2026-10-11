@@ -1,7 +1,7 @@
 package xyz.immortius.museumcurator.client.uielements;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.components.ContainerObjectSelectionList;
 import net.minecraft.client.gui.components.CycleButton;
@@ -93,8 +93,8 @@ public class SettingListWidget extends ContainerObjectSelectionList<SettingListW
         }
 
         @Override
-        public void render(GuiGraphics graphics, int listIndex, int top, int left, int width, int height, int mouseX, int mouseY, boolean hovered, float delta) {
-            graphics.drawString(SettingListWidget.this.minecraft.font, this.displayName, left + 12, top + 8, 0xFFFFFF, true);
+        public void extractContent(GuiGraphicsExtractor graphics, int listIndex, int top, int left, int width, int height, int mouseX, int mouseY, boolean hovered, float delta) {
+            graphics.text(SettingListWidget.this.minecraft.font, this.displayName, left + 12, top + 8, 0xFFFFFF, true);
         }
 
         @Override
@@ -159,9 +159,9 @@ public class SettingListWidget extends ContainerObjectSelectionList<SettingListW
         }
 
         @Override
-        public void render(GuiGraphics graphics, int listIndex, int top, int left, int width, int height, int mouseX, int mouseY, boolean hovered, float delta) {
+        public void extractContent(GuiGraphicsExtractor graphics, int listIndex, int top, int left, int width, int height, int mouseX, int mouseY, boolean hovered, float delta) {
             int labelLength = SettingListWidget.this.minecraft.font.width(this.displayName);
-            graphics.drawString(SettingListWidget.this.minecraft.font, this.displayName, left, top + 6, 0xFFFFFF);
+            graphics.text(SettingListWidget.this.minecraft.font, this.displayName, left, top + 6, 0xFFFFFF);
 
             widget.setX(left + labelLength + 6);
             widget.setWidth(getRowWidth() - labelLength - 6);
@@ -248,9 +248,9 @@ public class SettingListWidget extends ContainerObjectSelectionList<SettingListW
         }
 
         @Override
-        public void render(GuiGraphics graphics, int listIndex, int top, int left, int width, int height, int mouseX, int mouseY, boolean hovered, float delta) {
+        public void extractContent(GuiGraphicsExtractor graphics, int listIndex, int top, int left, int width, int height, int mouseX, int mouseY, boolean hovered, float delta) {
             int labelLength = SettingListWidget.this.minecraft.font.width(this.displayName);
-            graphics.drawString(SettingListWidget.this.minecraft.font, this.displayName, left, top + 6, 0xFFFFFF);
+            graphics.text(SettingListWidget.this.minecraft.font, this.displayName, left, top + 6, 0xFFFFFF);
             widget.setX(left + labelLength + 6);
             widget.setWidth(getRowWidth() - labelLength - 6);
             widget.setY(top);
@@ -295,7 +295,7 @@ public class SettingListWidget extends ContainerObjectSelectionList<SettingListW
         }
 
         @Override
-        public void render(GuiGraphics graphics, int listIndex, int top, int left, int width, int height, int mouseX, int mouseY, boolean hovered, float delta) {
+        public void extractContent(GuiGraphicsExtractor graphics, int listIndex, int top, int left, int width, int height, int mouseX, int mouseY, boolean hovered, float delta) {
             widget.setX(left);
             widget.setY(top);
             widget.render(graphics, mouseX, mouseY, delta);
