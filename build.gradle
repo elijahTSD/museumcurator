@@ -1,6 +1,58 @@
 plugins {
-    // see https://fabricmc.net/develop/ for new versions
-    id 'fabric-loom' version '1.8-SNAPSHOT' apply false
-    // see https://projects.neoforged.net/neoforged/moddevgradle for new versions
-    id 'net.neoforged.moddev' version '2.0.49-beta' apply false
+    id 'net.fabricmc.fabric-loom' version "${loom_version}"
+}
+
+group = project.group
+version = project.version
+
+base {
+    archivesName = "${mod_id}-fabric-${minecraft_version}"
+}
+
+repositories {
+    maven {
+        name = "Terraformers"
+        url = "https://maven.terraformersmc.com/releases"
+    }
+}
+
+sourceSets {
+    main {
+        java.srcDirs = ['common/src/main/java', 'fabric/src/main/java']
+        resources.srcDirs = ['common/src/main/resources', 'fabric/src/main/resources']
+    }
+}
+
+dependencies {
+    minecraft "com.mojang:minecraft:${minecraft_version}"
+    implementation "net.fabricmc:fabric-loader:${fabric_loader_version}"
+    implementation "net.fabricmc.fabric-api:fabric-api:${fabric_version}"
+    implementation "com.terraformersmc:modmenu:${modmenu_version}"
+}
+
+loom {
+    mixin {
+        defaultRefmapName.set("${mod_id}.refmap.json")
+    }
+}
+
+processResources {
+    inputs.properties(project.properties)
+    filesMatching("fabric.mod.json") { expand(project.properties) }
+    filesMatching("museumcurator.fabric.mixins.json") { expand(project.properties) }
+}
+
+tasks.withType(JavaCompile).configureEach {
+    options.encoding = 'UTF-8'
+    options.release = 25
+}
+
+java {
+    withSourcesJar()
+    sourceCompatibility = JavaVersion.VERSION_25
+    targetCompatibility = JavaVersion.VERSION_25
+}
+
+jar {
+    from("LICENSE") { rename { "${it}_${mod_id}" } }
 }
