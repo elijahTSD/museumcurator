@@ -20,7 +20,7 @@ jobs:
           java-version: "25"
       - uses: gradle/actions/setup-gradle@v4
       - name: Build Fabric mod
-        run: gradle build --no-daemon
+        run: ./gradlew build --no-daemon --no-configuration-cache
       - name: Upload JAR
         uses: actions/upload-artifact@v4
         with:
