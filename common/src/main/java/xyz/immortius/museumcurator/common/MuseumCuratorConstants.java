@@ -1,6 +1,6 @@
 package xyz.immortius.museumcurator.common;
 
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -17,11 +17,11 @@ public final class MuseumCuratorConstants {
 
     public static final String DEFAULT_CONFIG_PATH = "defaultconfigs";
     public static final String CONFIG_FILE = MOD_ID + ".toml";
-    public static final ResourceLocation WRITING_SOUND_ID = ResourceLocation.fromNamespaceAndPath(MOD_ID, "writing");
+    public static final Identifier WRITING_SOUND_ID = Identifier.fromNamespaceAndPath(MOD_ID, "writing");
 
-    public static final ResourceLocation LOG_ON_MESSAGE_ID = ResourceLocation.fromNamespaceAndPath(MOD_ID, "logon_message");
-    public static final ResourceLocation CHECKLIST_UPDATE_MESSAGE_ID = ResourceLocation.fromNamespaceAndPath(MOD_ID, "checklist_update_message");
-    public static final ResourceLocation CHECKLIST_CHANGE_REQUEST_MESSAGE_ID = ResourceLocation.fromNamespaceAndPath(MOD_ID, "checklist_change_request");
+    public static final Identifier LOG_ON_MESSAGE_ID = Identifier.fromNamespaceAndPath(MOD_ID, "logon_message");
+    public static final Identifier CHECKLIST_UPDATE_MESSAGE_ID = Identifier.fromNamespaceAndPath(MOD_ID, "checklist_update_message");
+    public static final Identifier CHECKLIST_CHANGE_REQUEST_MESSAGE_ID = Identifier.fromNamespaceAndPath(MOD_ID, "checklist_change_request");
 
     private MuseumCuratorConstants() {
     }

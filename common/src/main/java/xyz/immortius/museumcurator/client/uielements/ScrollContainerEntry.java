@@ -1,6 +1,6 @@
 package xyz.immortius.museumcurator.client.uielements;
 
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.network.chat.Component;
 
@@ -23,7 +23,7 @@ public interface ScrollContainerEntry extends GuiEventListener {
      * @param hovered
      * @param delta
      */
-    void render(GuiGraphics graphics, int top, int left, int width, int height, int mouseX, int mouseY, boolean hovered, float delta);
+    void render(GuiGraphicsExtractor graphics, int top, int left, int width, int height, int mouseX, int mouseY, boolean hovered, float delta);
 
     /**
      * @param width The width available to render the entry

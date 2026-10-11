@@ -3,16 +3,16 @@ package xyz.immortius.museumcurator.client.uielements;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.*;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Renderable;
 import net.minecraft.client.gui.components.events.AbstractContainerEventHandler;
 import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.gui.narration.NarratableEntry;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.client.renderer.GameRenderer;
-import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.Mth;
 
 import java.util.ArrayList;
@@ -25,7 +25,7 @@ import java.util.Objects;
  */
 public class ScrollContainerWidget extends AbstractContainerEventHandler implements Renderable, GuiEventListener, NarratableEntry {
 
-    private static final ResourceLocation SCROLLER_SPRITE = ResourceLocation.withDefaultNamespace("widget/scroller");
+    private static final Identifier SCROLLER_SPRITE = Identifier.withDefaultNamespace("widget/scroller");
     private static final int SCROLLBAR_WIDTH = 6;
     private static final int SCROLLBAR_SPACE = 2;
 
@@ -71,7 +71,7 @@ public class ScrollContainerWidget extends AbstractContainerEventHandler impleme
     }
 
     @Override
-    public void render(GuiGraphics graphics, int mouseX, int mouseY, float delta) {
+    public void extractRenderState(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float delta) {
         this.hovered = this.isMouseOver(mouseX, mouseY) ? this.getEntryAtPosition(mouseX, mouseY) : null;
         this.renderList(graphics, mouseX, mouseY, delta);
         renderScrollbar(graphics);
@@ -92,7 +92,7 @@ public class ScrollContainerWidget extends AbstractContainerEventHandler impleme
         return children.stream().map(x -> x.getHeight(width)).reduce(0, Integer::sum);
     }
 
-    protected void renderList(GuiGraphics graphics, int mouseX, int mouseY, float delta) {
+    protected void renderList(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float delta) {
         graphics.enableScissor(x, y, x + width, y + height);
         int absoluteY = 0;
         for (ScrollContainerEntry child : children) {
@@ -105,7 +105,7 @@ public class ScrollContainerWidget extends AbstractContainerEventHandler impleme
         graphics.disableScissor();
     }
 
-    private void renderScrollbar(GuiGraphics graphics) {
+    private void renderScrollbar(GuiGraphicsExtractor graphics) {
         int maxScroll = getMaxScroll();
         if (maxScroll == 0) {
             return;
@@ -118,7 +118,7 @@ public class ScrollContainerWidget extends AbstractContainerEventHandler impleme
         if (scrollerPos < y) {
             scrollerPos = y;
         }
-        graphics.blitSprite(RenderType::guiTextured, SCROLLER_SPRITE, right - SCROLLBAR_WIDTH, scrollerPos, SCROLLBAR_WIDTH, scrollerSize);
+        graphics.blitSprite(RenderPipelines.GUI_TEXTURED, SCROLLER_SPRITE, right - SCROLLBAR_WIDTH, scrollerPos, SCROLLBAR_WIDTH, scrollerSize);
     }
 
     @Override
