@@ -160,49 +160,49 @@ public final class MuseumCollections {
         @Override
         public void visitString(StringTag tag) {
             if (target instanceof StringTag t) {
-                match = t.equals(tag);
+                match = t.value().equals(tag.value());
             }
         }
 
         @Override
         public void visitByte(ByteTag tag) {
             if (target instanceof NumericTag t) {
-                match = t.equals(tag);
+                match = t.longValue() == tag.longValue();
             }
         }
 
         @Override
         public void visitShort(ShortTag tag) {
             if (target instanceof NumericTag t) {
-                match = t.equals(tag);
+                match = t.longValue() == tag.longValue();
             }
         }
 
         @Override
         public void visitInt(IntTag tag) {
             if (target instanceof NumericTag t) {
-                match = t.equals(tag);
+                match = t.longValue() == tag.longValue();
             }
         }
 
         @Override
         public void visitLong(LongTag tag) {
             if (target instanceof NumericTag t) {
-                match = t.equals(tag);
+                match = t.longValue() == tag.longValue();
             }
         }
 
         @Override
         public void visitFloat(FloatTag tag) {
             if (target instanceof NumericTag t) {
-                match = t.equals(tag);
+                match = Math.abs(t.doubleValue() - tag.doubleValue()) < Mth.EPSILON;
             }
         }
 
         @Override
         public void visitDouble(DoubleTag tag) {
             if (target instanceof NumericTag t) {
-                match = Math.abst.equals(tag);
+                match = Math.abs(t.doubleValue() - tag.doubleValue()) < Mth.EPSILON;
             }
         }
 
