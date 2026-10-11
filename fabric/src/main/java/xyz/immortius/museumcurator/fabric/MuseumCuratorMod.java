@@ -62,9 +62,9 @@ public class MuseumCuratorMod implements ModInitializer {
         ServerLifecycleEvents.SERVER_STARTED.register(ServerEventHandler::onServerStarted);
         ServerLifecycleEvents.SERVER_STARTING.register(ServerEventHandler::onServerStarting);
 
-        PayloadTypeRegistry.playS2C().register(LogOnMessage.ID, LogOnMessage.STREAM_CODEC);
+        PayloadTypeRegistry.clientboundPlay().register(LogOnMessage.ID, LogOnMessage.STREAM_CODEC);
         PayloadTypeRegistry.playS2C().register(ChecklistUpdateMessage.ID, ChecklistUpdateMessage.STREAM_CODEC);
-        PayloadTypeRegistry.playC2S().register(ChecklistChangeRequest.ID, ChecklistChangeRequest.STREAM_CODEC);
+        PayloadTypeRegistry.serverboundPlay().register(ChecklistChangeRequest.ID, ChecklistChangeRequest.STREAM_CODEC);
 
         ServerPlayConnectionEvents.JOIN.register((handler, sender, server) -> {
             LogOnMessage message = new LogOnMessage(MuseumCollections.getCollections(), ChecklistState.get(server, handler.getPlayer()).getCheckedItems());
@@ -72,7 +72,7 @@ public class MuseumCuratorMod implements ModInitializer {
         });
 
         ServerPlayNetworking.registerGlobalReceiver(ChecklistChangeRequest.ID, (payload, context) -> {
-            ServerChecklistUpdateReceiver.receive(context.player().getServer(), context.player(), payload);
+            ServerChecklistUpdateReceiver.receive(context.server(), context.player(), payload);
         });
 
 
