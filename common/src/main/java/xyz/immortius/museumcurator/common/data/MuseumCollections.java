@@ -60,17 +60,10 @@ public final class MuseumCollections {
         CollectionItem bestMatch = null;
         int bestExcessTags = 0;
         for (CollectionItem candidate : candidates) {
-            boolean match = true;
-            if (!candidate.componentFilter().isEmpty()) {
-                for (DataComponentType<?> type : candidate.componentFilter().keySet()) {
-                    Object expected = candidate.componentFilter().getPatch(type);
-                    Object actual = itemStack.getComponents().get(type);
-                    match = Objects.equals(expected, actual);
-                    if (!match) {
-                        break;
-                    }
-                }
-            }
+            // For entries with an explicit component filter, compare the fully-resolved stack.
+            // Entries without a filter intentionally match any stack of the same item.
+            boolean match = candidate.componentFilter().isEmpty()
+                    || ItemStack.isSameItemSameComponents(itemStack, candidate.itemStack());
             if (match) {
                 int excessTags = itemStack.getComponents().size() - candidate.itemStack().getComponents().size();
                 if (bestMatch == null || excessTags < bestExcessTags) {
