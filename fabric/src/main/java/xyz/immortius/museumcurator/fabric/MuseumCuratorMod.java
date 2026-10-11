@@ -84,7 +84,7 @@ public class MuseumCuratorMod implements ModInitializer {
         MUSEUM_CHECKLIST = Registry.register(BuiltInRegistries.ITEM, createId("museumchecklist"), new MuseumChecklist(new Item.Properties().setId(ResourceKey.create(Registries.ITEM, createId("museumchecklist")))));
 
         CreativeModeTabEvents.modifyOutputEvent(CreativeModeTabs.TOOLS_AND_UTILITIES).register(content -> {
-            content.addAfter(Items.MUSIC_DISC_PIGSTEP, MUSEUM_CHECKLIST);
+            content.insertAfter(Items.MUSIC_DISC_PIGSTEP, MUSEUM_CHECKLIST);
         });
 
         MUSEUM_CHECKLIST_MENU = Registry.register(BuiltInRegistries.MENU, createId("museumchecklistmenu"), new MenuType<>(MuseumChecklistMenu::new, FeatureFlags.VANILLA_SET));
