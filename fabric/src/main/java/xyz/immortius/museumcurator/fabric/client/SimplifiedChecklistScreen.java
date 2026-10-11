@@ -47,6 +47,8 @@ public final class SimplifiedChecklistScreen extends AbstractContainerScreen<Mus
     @Override
     public void extractRenderState(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float delta) {
         super.extractRenderState(graphics, mouseX, mouseY, delta);
+        graphics.fill(leftPos, topPos, leftPos + imageWidth, topPos + imageHeight, 0xFF20242A);
+        graphics.fill(leftPos + 1, topPos + 1, leftPos + imageWidth - 1, topPos + imageHeight - 1, 0xFF343A42);
         int checked = 0;
         for (CollectionItem item : items) {
             if (MuseumCollections.isChecked(item)) checked++;
