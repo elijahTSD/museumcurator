@@ -43,15 +43,25 @@ loom {
     }
 }
 
+def resourceProperties = [
+    version: project.version,
+    minecraft_version: project.minecraft_version,
+    fabric_loader_version: project.fabric_loader_version,
+    mod_name: project.mod_name,
+    description: project.description,
+    mod_author: project.mod_author,
+    license: project.license,
+    mod_id: project.mod_id,
+    modmenu_version: project.modmenu_version
+]
+
 processResources {
-    inputs.properties(project.properties)
-
+    inputs.properties(resourceProperties)
     filesMatching("fabric.mod.json") {
-        expand(project.properties)
+        expand(resourceProperties)
     }
-
     filesMatching("museumcurator.fabric.mixins.json") {
-        expand(project.properties)
+        expand([mod_id: project.mod_id])
     }
 }
 
