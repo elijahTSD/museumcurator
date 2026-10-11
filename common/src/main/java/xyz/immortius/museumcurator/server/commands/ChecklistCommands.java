@@ -27,7 +27,7 @@ public class ChecklistCommands {
                 .then(Commands.argument("item", ItemArgument.item(context))
                 .executes((ctx) -> uncheckItem(ctx.getSource(), ctx.getSource().getServer(), ItemArgument.getItem(ctx, "item")))));
         dispatcher.register(Commands.literal("museumcommand:uncheckAllItems")
-                .requires(x -> x.hasPermission(2))
+                .requires(Commands.hasPermission(Commands.LEVEL_GAMEMASTERS))
                 .executes((ctx) -> uncheckAllItems(ctx.getSource(), ctx.getSource().getServer())));
     }
 
@@ -45,7 +45,7 @@ public class ChecklistCommands {
     private static int checkItem(CommandSourceStack source, MinecraftServer server, ItemInput item) {
         try {
             ServerPlayer player = source.getPlayerOrException();
-            ChecklistState.get(server, player).check(Collections.singletonList(item.getItem().getDefaultInstance()));
+            ChecklistState.get(server, player).check(Collections.singletonList(item.createItemStack(1)));
             return 1;
         } catch (CommandSyntaxException e) {
             return 0;
