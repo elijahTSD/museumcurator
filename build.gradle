@@ -20,6 +20,13 @@ sourceSets {
     main {
         java.srcDirs = ['common/src/main/java', 'fabric/src/main/java']
         resources.srcDirs = ['common/src/main/resources', 'fabric/src/main/resources']
+        java {
+            exclude 'xyz/immortius/museumcurator/client/screens/AbstractChecklistScreen.java'
+            exclude 'xyz/immortius/museumcurator/client/screens/ChecklistCollectionScreen.java'
+            exclude 'xyz/immortius/museumcurator/client/screens/ChecklistOverviewScreen.java'
+            exclude 'xyz/immortius/museumcurator/client/screens/MuseumCuratorConfigScreen.java'
+            exclude 'xyz/immortius/museumcurator/client/uielements/**'
+        }
     }
 }
 
@@ -44,6 +51,7 @@ processResources {
 
 tasks.withType(JavaCompile).configureEach {
     options.encoding = 'UTF-8'
+    options.compilerArgs += ['-Xmaxerrs', '250']
     options.release = 25
 }
 
