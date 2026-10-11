@@ -1,6 +1,5 @@
 package xyz.immortius.museumcurator.client.uielements;
 
-import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Button;
@@ -9,60 +8,33 @@ import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.ARGB;
-import net.minecraft.util.Mth;
 
-/**
- * Slightly modified button that allows text color to be specified.
- */
+/** Button that lets the mod choose a custom active/inactive text color. */
 public class ColorTextButton extends Button {
     private static final WidgetSprites SPRITES = new WidgetSprites(
             Identifier.withDefaultNamespace("widget/button"),
             Identifier.withDefaultNamespace("widget/button_disabled"),
-            Identifier.withDefaultNamespace("widget/button_highlighted")
-    );
-
-    private int activeTextColor = 0xffffff;
-    private int textColor = 0xa0a0a0;
+            Identifier.withDefaultNamespace("widget/button_highlighted"));
+    private int activeTextColor = 0xFFFFFF;
+    private int textColor = 0xA0A0A0;
 
     public ColorTextButton(int x, int y, int width, int height, Component label, OnPress onPress) {
         this(x, y, width, height, label, onPress, DEFAULT_NARRATION);
     }
 
-    public ColorTextButton(int x, int y, int width, int height, Component label, OnPress onPress, CreateNarration createNarration) {
-        super(x, y, width, height, label, onPress, createNarration);
+    public ColorTextButton(int x, int y, int width, int height, Component label, OnPress onPress, CreateNarration narration) {
+        super(x, y, width, height, label, onPress, narration);
     }
 
-    public void extractWidgetRenderState(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTick) {
-        Minecraft minecraft = Minecraft.getInstance();
-        guiGraphics.blitSprite(
-                RenderPipelines.GUI_TEXTURED,
-                SPRITES.get(this.active, this.isHoveredOrFocused()),
-                this.getX(),
-                this.getY(),
-                this.getWidth(),
-                this.getHeight(),
-                ARGB.white(this.alpha)
-        );
+    @Override
+    protected void extractContents(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float partialTick) {
+        graphics.blitSprite(RenderPipelines.GUI_TEXTURED, SPRITES.get(this.active, this.isHoveredOrFocused()),
+                getX(), getY(), getWidth(), getHeight(), ARGB.white(this.alpha));
         int color = this.active ? activeTextColor : textColor;
-        this.renderString(guiGraphics, minecraft.font, color);
+        graphics.centeredText(Minecraft.getInstance().font, getMessage(),
+                getX() + getWidth() / 2, getY() + (getHeight() - 8) / 2, color);
     }
 
-    private int getTextureY() {
-        int offset = 1;
-        if (!this.active) {
-            offset = 0;
-        } else if (this.isHoveredOrFocused()) {
-            offset = 2;
-        }
-
-        return 46 + offset * 20;
-    }
-
-    public void setTextColor(int textColor) {
-        this.textColor = textColor;
-    }
-
-    public void setActiveTextColor(int activeTextColor) {
-        this.activeTextColor = activeTextColor;
-    }
+    public void setTextColor(int textColor) { this.textColor = textColor; }
+    public void setActiveTextColor(int activeTextColor) { this.activeTextColor = activeTextColor; }
 }

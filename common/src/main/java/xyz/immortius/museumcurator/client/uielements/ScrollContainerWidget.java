@@ -1,221 +1,96 @@
 package xyz.immortius.museumcurator.client.uielements;
 
-import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.*;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
-import net.minecraft.client.gui.components.Renderable;
-import net.minecraft.client.gui.components.events.AbstractContainerEventHandler;
-import net.minecraft.client.gui.components.events.GuiEventListener;
-import net.minecraft.client.gui.narration.NarratableEntry;
+import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
-import net.minecraft.client.renderer.GameRenderer;
-import net.minecraft.client.renderer.RenderPipelines;
+import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.Identifier;
 import net.minecraft.util.Mth;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Objects;
 
-/**
- * Scroll container is a scrollable area for entries of variable height.
- */
-public class ScrollContainerWidget extends AbstractContainerEventHandler implements Renderable, GuiEventListener, NarratableEntry {
-
-    private static final Identifier SCROLLER_SPRITE = Identifier.withDefaultNamespace("widget/scroller");
-    private static final int SCROLLBAR_WIDTH = 6;
-    private static final int SCROLLBAR_SPACE = 2;
-
-    private int x;
-    private int y;
-    private int width;
-    private int height;
+public class ScrollContainerWidget extends AbstractWidget {
+    private final List<ScrollContainerEntry> entries = new ArrayList<>();
     private double scrollAmount;
-    private final List<ScrollContainerEntry> children = new ArrayList<>();
-    private ScrollContainerEntry hovered;
-    private boolean scrolling;
 
     public ScrollContainerWidget(int x, int y, int width, int height, List<? extends ScrollContainerEntry> entries) {
-        this.x = x;
-        this.y = y;
-        this.width = width;
-        this.height = height;
-        this.children.addAll(entries);
+        super(x, y, width, height, Component.empty());
+        this.entries.addAll(entries);
     }
 
     public void addEntry(ScrollContainerEntry entry) {
-        children.add(entry);
+        entries.add(entry);
+    }
+
+    private int getContentHeight() {
+        return entries.stream().map(e -> e.getHeight(getWidth())).reduce(0, Integer::sum);
+    }
+
+    private double maxScroll() {
+        return Math.max(0, getContentHeight() - getHeight());
     }
 
     private void setScrollAmount(double amount) {
-        scrollAmount = Mth.clamp(amount, 0, getMaxScroll());
-    }
-
-    private ScrollContainerEntry getEntryAtPosition(double mouseX, double mouseY) {
-        if (mouseX < this.x || mouseX > this.x + width - SCROLLBAR_WIDTH - SCROLLBAR_SPACE || mouseY < y || mouseY > y + height) {
-            return null;
-        }
-        double absolutePos = mouseY + scrollAmount - y;
-        int totalY = 0;
-        for (ScrollContainerEntry entry : children) {
-            int entryHeight = entry.getHeight(width - SCROLLBAR_WIDTH - SCROLLBAR_SPACE);
-            if (totalY < absolutePos && totalY + entryHeight >= absolutePos) {
-                return entry;
-            }
-            totalY += entryHeight;
-        }
-        return null;
-    }
-
-    @Override
-    public void extractRenderState(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float delta) {
-        this.hovered = this.isMouseOver(mouseX, mouseY) ? this.getEntryAtPosition(mouseX, mouseY) : null;
-        this.renderList(graphics, mouseX, mouseY, delta);
-        renderScrollbar(graphics);
+        this.scrollAmount = Mth.clamp(amount, 0.0, maxScroll());
     }
 
     public List<Component> getTooltip(int mouseX, int mouseY) {
-        if (hovered != null) {
-            return hovered.getTooltip(mouseX, mouseY);
+        int relativeY = (int) (mouseY - getY() + scrollAmount);
+        int top = 0;
+        for (ScrollContainerEntry entry : entries) {
+            int rowHeight = entry.getHeight(getWidth());
+            if (relativeY >= top && relativeY < top + rowHeight) {
+                return entry.getTooltip(mouseX, (int) (mouseY + scrollAmount));
+            }
+            top += rowHeight;
         }
         return Collections.emptyList();
     }
 
-    private int getMaxScroll() {
-        return Math.max(0, getTotalListHeight() - height);
-    }
-
-    private int getTotalListHeight() {
-        return children.stream().map(x -> x.getHeight(width)).reduce(0, Integer::sum);
-    }
-
-    protected void renderList(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float delta) {
-        graphics.enableScissor(x, y, x + width, y + height);
-        int absoluteY = 0;
-        for (ScrollContainerEntry child : children) {
-            int rowBottom = absoluteY + child.getHeight(width - SCROLLBAR_WIDTH - SCROLLBAR_SPACE);
-            if (rowBottom >= scrollAmount && absoluteY <= scrollAmount + height) {
-                child.render(graphics, y + absoluteY - (int) scrollAmount, x, width - SCROLLBAR_WIDTH - SCROLLBAR_SPACE, rowBottom - absoluteY, mouseX, mouseY, Objects.equals(this.hovered, child), delta);
+    @Override
+    protected void extractWidgetRenderState(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float partialTick) {
+        graphics.enableScissor(getX(), getY(), getX() + getWidth(), getY() + getHeight());
+        int top = 0;
+        for (ScrollContainerEntry entry : entries) {
+            int rowHeight = entry.getHeight(getWidth());
+            int y = getY() + top - (int) scrollAmount;
+            if (y + rowHeight >= getY() && y <= getY() + getHeight()) {
+                entry.extractContent(graphics, y, getX(), getWidth(), rowHeight, mouseX, mouseY,
+                        mouseY >= y && mouseY < y + rowHeight, partialTick);
             }
-            absoluteY = rowBottom;
+            top += rowHeight;
         }
         graphics.disableScissor();
     }
 
-    private void renderScrollbar(GuiGraphicsExtractor graphics) {
-        int maxScroll = getMaxScroll();
-        if (maxScroll == 0) {
-            return;
+    @Override
+    public void onClick(MouseButtonEvent event, boolean doubleClick) {
+        if (event.button() != 0) return;
+        int relativeY = (int) (event.y() - getY() + scrollAmount);
+        int top = 0;
+        for (ScrollContainerEntry entry : entries) {
+            int rowHeight = entry.getHeight(getWidth());
+            if (relativeY >= top && relativeY < top + rowHeight) {
+                entry.mouseClicked(event, doubleClick);
+                return;
+            }
+            top += rowHeight;
         }
-
-        int right = x + this.width;
-        int scrollerSize = (int)((float)((height) * (height)) / (float)this.getTotalListHeight());
-        scrollerSize = Mth.clamp(scrollerSize, 32, height - 8);
-        int scrollerPos = (int)this.scrollAmount * (height - scrollerSize) / maxScroll + y;
-        if (scrollerPos < y) {
-            scrollerPos = y;
-        }
-        graphics.blitSprite(RenderPipelines.GUI_TEXTURED, SCROLLER_SPRITE, right - SCROLLBAR_WIDTH, scrollerPos, SCROLLBAR_WIDTH, scrollerSize);
     }
 
     @Override
-    public List<? extends GuiEventListener> children() {
-        return children;
-    }
-
-    protected void updateScrollingState(double mouseX, double mouseY, int button) {
-        this.scrolling = button == 0 && mouseX >= (double) (x + width - SCROLLBAR_WIDTH) && mouseX < (double) (x + width);
-        this.setDragging(true);
-    }
-
-    public boolean mouseClicked(double mouseX, double mouseY, int button) {
-        this.updateScrollingState(mouseX, mouseY, button);
-        if (!this.isMouseOver(mouseX, mouseY)) {
-            return false;
-        } else {
-            ScrollContainerEntry e = this.getEntryAtPosition(mouseX, mouseY);
-            if (e != null) {
-                if (e.mouseClicked(mouseX, mouseY, button)) {
-                    this.setFocused(e);
-                    this.setDragging(true);
-                    return true;
-                }
-            }
-
-            return this.scrolling;
-        }
-    }
-
-    public boolean mouseReleased(double mouseX, double mouseY, int button) {
-        if (this.getFocused() != null) {
-            this.getFocused().mouseReleased(mouseX, mouseY, button);
-        }
-
-        return false;
-    }
-
-    public boolean mouseDragged(double mouseX, double mouseY, int button, double deltaX, double deltaY) {
-        if (super.mouseDragged(mouseX, mouseY, button, deltaX, deltaY)) {
-            return true;
-        } else if (button == 0 && this.scrolling) {
-            if (mouseY < (double) this.y) {
-                setScrollAmount(0.0D);
-            } else if (mouseY > (double) this.y + height) {
-                setScrollAmount(this.getMaxScroll());
-            } else {
-                double d0 = Math.max(1, this.getMaxScroll());
-                int j = Mth.clamp((int) ((float) (height * height) / (float) this.getTotalListHeight()), 32, height - 8);
-                double d1 = Math.max(1.0D, d0 / (double) (height - j));
-                setScrollAmount(scrollAmount + deltaY * d1);
-            }
-
-            return true;
-        } else {
-            return false;
-        }
-    }
-
-    public boolean mouseScrolled(double mouseX, double mouseY, double delta, double wheelDelta) {
-        setScrollAmount(scrollAmount - wheelDelta * 20);
+    public boolean mouseScrolled(double mouseX, double mouseY, double scrollX, double scrollY) {
+        if (!isMouseOver(mouseX, mouseY)) return false;
+        setScrollAmount(scrollAmount - scrollY * 20.0);
         return true;
     }
 
-    public boolean keyPressed(int p_93434_, int p_93435_, int p_93436_) {
-        if (super.keyPressed(p_93434_, p_93435_, p_93436_)) {
-            return true;
-        } else if (Minecraft.getInstance().options.keyUp.matches(p_93434_, p_93435_)) {
-            setScrollAmount(scrollAmount - 20);
-            return true;
-        } else if (Minecraft.getInstance().options.keyDown.matches(p_93434_, p_93435_)) {
-            setScrollAmount(scrollAmount + 20);
-            return true;
-        } else {
-            return false;
-        }
-    }
-
-    public boolean isMouseOver(double mouseX, double mouseY) {
-        return mouseY >= y && mouseY <= (y + height) && mouseX >= x && mouseX <= x + width;
-    }
+    public void scrollUp() { setScrollAmount(scrollAmount - 20); }
+    public void scrollDown() { setScrollAmount(scrollAmount + 20); }
 
     @Override
-    public void updateNarration(NarrationElementOutput output) {
-
-    }
-
-    @Override
-    public NarrationPriority narrationPriority() {
-        return NarrationPriority.NONE;
-    }
-
-    public void scrollUp() {
-        setScrollAmount(scrollAmount - 20);
-    }
-
-    public void scrollDown() {
-        setScrollAmount(scrollAmount + 20);
+    protected void updateWidgetNarration(NarrationElementOutput output) {
     }
 }
