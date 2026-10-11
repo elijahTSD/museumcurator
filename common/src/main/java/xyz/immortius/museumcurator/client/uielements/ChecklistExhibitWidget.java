@@ -2,11 +2,11 @@ package xyz.immortius.museumcurator.client.uielements;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.client.renderer.GameRenderer;
-import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.client.resources.sounds.SimpleSoundInstance;
 import net.minecraft.network.chat.Component;
 import net.minecraft.sounds.SoundEvents;
@@ -62,14 +62,14 @@ public class ChecklistExhibitWidget extends AbstractWidget {
     }
 
     @Override
-    public void renderWidget(GuiGraphics graphics, int mouseX, int mouseY, float delta) {
+    public void extractWidgetRenderState(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float delta) {
         Minecraft minecraft = Minecraft.getInstance();
         int offsetY = 0;
         int offsetX = 0;
 
         long checked = MuseumCollections.countChecked(exhibit.getItems());
         Component title = Component.literal("").append(exhibit.getName()).append("  (" + checked + " / " + exhibit.getItems().size() + ")");
-        graphics.drawString(minecraft.font, title, getX() + offsetX, getY() + offsetY, 0x404040, false);
+        graphics.text(minecraft.font, title, getX() + offsetX, getY() + offsetY, 0x404040, false);
 
         offsetY += TITLE_HEIGHT;
         for (CollectionItem item : exhibit.getItems()) {
@@ -80,7 +80,7 @@ public class ChecklistExhibitWidget extends AbstractWidget {
             graphics.renderItem(item.itemStack(), getX() + offsetX + 1, getY() + offsetY + 1);
 
             boolean unlocked = MuseumCollections.isChecked(item);
-            graphics.blit(RenderType::guiTexturedOverlay, AbstractChecklistScreen.CONTAINER_TEXTURE, offsetX + getX(), offsetY + getY(), (unlocked) ? 18 : 0, 256, 18, 18, AbstractChecklistScreen.TEXTURE_DIM, AbstractChecklistScreen.TEXTURE_DIM);
+            graphics.blit(RenderPipelines.GUI_TEXTURED, AbstractChecklistScreen.CONTAINER_TEXTURE, offsetX + getX(), offsetY + getY(), (unlocked) ? 18 : 0, 256, 18, 18, AbstractChecklistScreen.TEXTURE_DIM, AbstractChecklistScreen.TEXTURE_DIM);
             offsetX += 20;
         }
     }

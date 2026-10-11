@@ -1,6 +1,6 @@
 package xyz.immortius.museumcurator.client.uielements;
 
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.network.chat.Component;
 import xyz.immortius.museumcurator.common.data.MuseumCollection;
 import xyz.immortius.museumcurator.common.data.MuseumCollections;
@@ -21,7 +21,7 @@ public class CollectionButton extends ColorTextButton {
     }
 
     @Override
-    public void renderWidget(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
+    public void extractWidgetRenderState(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTick) {
         int totalCount = collection.getExhibits().stream().map(x -> x.getItems().size()).reduce(0, Integer::sum);
         int unlockedCount = collection.getExhibits().stream().map(x -> MuseumCollections.countChecked(x.getItems())).reduce(0L, Long::sum).intValue();
         setMessage(Component.literal("").append(collection.getName()).append(" (" + unlockedCount + " / " + totalCount + ")"));
