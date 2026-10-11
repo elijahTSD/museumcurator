@@ -50,7 +50,7 @@ public class ChecklistExhibitWidget extends AbstractWidget {
     }
 
     @Override
-    protected void extractWidgetRenderState(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float partialTick) {
+    public void extractWidgetRenderState(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float partialTick) {
         int offsetY = TITLE_HEIGHT;
         int offsetX = 0;
         long checked = MuseumCollections.countChecked(exhibit.getItems());
