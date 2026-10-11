@@ -39,7 +39,7 @@ public final class SimplifiedChecklistScreen extends AbstractContainerScreen<Mus
     }
 
     @Override
-    protected void extractBackground(GuiGraphicsExtractor graphics, float delta, int mouseX, int mouseY) {
+    public void extractBackground(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float delta) {
         graphics.fill(leftPos, topPos, leftPos + imageWidth, topPos + imageHeight, 0xFF20242A);
         graphics.fill(leftPos + 1, topPos + 1, leftPos + imageWidth - 1, topPos + imageHeight - 1, 0xFF343A42);
     }
