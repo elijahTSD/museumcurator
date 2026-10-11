@@ -63,7 +63,7 @@ public class MuseumCuratorMod implements ModInitializer {
         ServerLifecycleEvents.SERVER_STARTING.register(ServerEventHandler::onServerStarting);
 
         PayloadTypeRegistry.clientboundPlay().register(LogOnMessage.ID, LogOnMessage.STREAM_CODEC);
-        PayloadTypeRegistry.playS2C().register(ChecklistUpdateMessage.ID, ChecklistUpdateMessage.STREAM_CODEC);
+        PayloadTypeRegistry.clientboundPlay().register(ChecklistUpdateMessage.ID, ChecklistUpdateMessage.STREAM_CODEC);
         PayloadTypeRegistry.serverboundPlay().register(ChecklistChangeRequest.ID, ChecklistChangeRequest.STREAM_CODEC);
 
         ServerPlayConnectionEvents.JOIN.register((handler, sender, server) -> {
