@@ -1,6 +1,6 @@
 package xyz.immortius.museumcurator.client.screens;
 
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
@@ -32,11 +32,11 @@ public class MuseumCuratorConfigScreen extends Screen {
         }).bounds(w, height - 32, 60, 20).build();
         cancelButton = Button.builder(Component.translatable("gui.cancel"), button -> {
             ConfigUtil.loadDefaultConfig();
-            this.minecraft.setScreen(lastScreen);
+            this.minecraft.gui.setScreen(lastScreen);
         }).bounds(width / 3 + w, height - 32, 60, 20).build();
         saveButton = Button.builder(Component.translatable("selectWorld.edit.save"), button -> {
             ConfigUtil.saveDefaultConfig();
-            this.minecraft.setScreen(lastScreen);
+            this.minecraft.gui.setScreen(lastScreen);
         }).bounds(2 * width / 3 + w, height - 32, 60, 20).build();
 
         this.addRenderableWidget(settingsList);
@@ -49,7 +49,7 @@ public class MuseumCuratorConfigScreen extends Screen {
     public void onClose() {
         ConfigUtil.loadDefaultConfig();
         super.onClose();
-        this.minecraft.setScreen(lastScreen);
+        this.minecraft.gui.setScreen(lastScreen);
     }
 
     @Override
@@ -58,11 +58,11 @@ public class MuseumCuratorConfigScreen extends Screen {
     }
 
     @Override
-    public void render(GuiGraphics graphics, int mouseX, int mouseY, float delta) {
-        super.render(graphics, mouseX, mouseY, delta);
+    public void extractRenderState(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float delta) {
+        super.extractRenderState(graphics, mouseX, mouseY, delta);
 
         int titleWidth = font.width(title);
         int titleX = (width - titleWidth) / 2;
-        graphics.drawString(this.font, title, titleX, 8, 0xFFFFFF, true);
+        graphics.text(this.font, title, titleX, 8, 0xFFFFFF, true);
     }
 }

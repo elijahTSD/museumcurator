@@ -1,7 +1,7 @@
 package xyz.immortius.museumcurator.client.screens;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
 import xyz.immortius.museumcurator.client.uielements.CollectionButton;
@@ -43,7 +43,7 @@ public class ChecklistOverviewScreen extends AbstractChecklistScreen {
         int index = 0;
         for (MuseumCollection collection : MuseumCollections.getCollections().stream().sorted(Comparator.comparing(x -> x.getName().getString())).toList()) {
             collectionButtons.add(new CollectionButton(leftPos + 16 + 226 / 2 - 96, topPos + 46 + 2 + 24 * (index++ % ITEMS_PER_PAGE), 192, 20, collection, button ->
-                    Minecraft.getInstance().setScreen(new ChecklistCollectionScreen(menu, playerInventory, collection.getName(), collection, this))));
+                    Minecraft.getInstance().gui.setScreen(new ChecklistCollectionScreen(menu, playerInventory, collection.getName(), collection, this))));
         }
 
         prevButton = new ShapedButton(leftPos + 14, topPos + 226, 8, 13, Component.empty(), AbstractChecklistScreen.CONTAINER_TEXTURE, AbstractChecklistScreen.TEXTURE_DIM, 54, 256, 54, 269, (b) -> currentPage--);
@@ -51,8 +51,8 @@ public class ChecklistOverviewScreen extends AbstractChecklistScreen {
     }
 
     @Override
-    public void render(GuiGraphics stack, int mouseX, int mouseY, float delta) {
-        super.render(stack, mouseX, mouseY, delta);
+    public void extractRenderState(GuiGraphicsExtractor stack, int mouseX, int mouseY, float delta) {
+        super.extractRenderState(stack, mouseX, mouseY, delta);
         for (int i = currentPage * ITEMS_PER_PAGE; i < Math.min(collectionButtons.size(), (currentPage + 1) * ITEMS_PER_PAGE); i++) {
             collectionButtons.get(i).render(stack, mouseX, mouseY, delta);
         }

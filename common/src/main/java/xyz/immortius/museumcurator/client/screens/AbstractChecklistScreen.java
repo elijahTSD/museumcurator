@@ -1,13 +1,13 @@
 package xyz.immortius.museumcurator.client.screens;
 
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
-import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.player.Inventory;
 import org.jetbrains.annotations.Nullable;
 import xyz.immortius.museumcurator.common.MuseumCuratorConstants;
@@ -19,7 +19,7 @@ import java.util.Optional;
  * Shared base for the checklist screens. Includes the common look and feel, and common elements.
  */
 public abstract class AbstractChecklistScreen extends AbstractContainerScreen<MuseumChecklistMenu> {
-    public static final ResourceLocation CONTAINER_TEXTURE = ResourceLocation.fromNamespaceAndPath(MuseumCuratorConstants.MOD_ID, "textures/gui/container/checklist.png");
+    public static final Identifier CONTAINER_TEXTURE = Identifier.fromNamespaceAndPath(MuseumCuratorConstants.MOD_ID, "textures/gui/container/checklist.png");
     public static final int TEXTURE_DIM = 512;
     protected final Inventory playerInventory;
     private final Screen lastScreen;
@@ -41,31 +41,31 @@ public abstract class AbstractChecklistScreen extends AbstractContainerScreen<Mu
         super.init();
 
         Button closeButton = Button.builder(Component.translatable("gui.back"), button -> {
-            this.minecraft.setScreen(lastScreen);
+            this.minecraft.gui.setScreen(lastScreen);
         }).bounds((width - imageWidth) / 2 + 96, topPos + 222, 64, 20).build();
         addRenderableWidget(closeButton);
     }
 
-    protected void renderLabels(GuiGraphics graphics, int mouseX, int mouseY) {
+    protected void extractLabels(GuiGraphicsExtractor graphics, int mouseX, int mouseY) {
         int width = this.font.width(this.title);
-        graphics.drawString(this.font, this.title, (imageWidth - width) / 2, this.titleLabelY, 0x404040, false);
+        graphics.text(this.font, this.title, (imageWidth - width) / 2, this.titleLabelY, 0x404040, false);
     }
 
     @Override
-    public void render(GuiGraphics graphics, int mouseX, int mouseY, float delta) {
-        renderBackground(graphics, mouseX, mouseY, delta);
-        super.render(graphics, mouseX, mouseY, delta);
+    public void extractRenderState(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float delta) {
+        
+        super.extractRenderState(graphics, mouseX, mouseY, delta);
         renderContent(graphics, mouseX, mouseY, delta);
         renderTooltip(graphics, mouseX, mouseY);
     }
 
-    public void renderContent(GuiGraphics graphics, int mouseX, int mouseY, float delta) {
+    public void renderContent(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float delta) {
 
     }
 
     @Override
-    protected void renderBg(GuiGraphics graphics, float delta, int mouseX, int mouseY) {
-        graphics.blit(RenderType::guiTextured, CONTAINER_TEXTURE, leftPos, topPos, 0, 0, imageWidth, imageHeight, TEXTURE_DIM, TEXTURE_DIM);
+    protected void extractBackground(GuiGraphicsExtractor graphics, float delta, int mouseX, int mouseY) {
+        graphics.blit(RenderPipelines.GUI_TEXTURED, CONTAINER_TEXTURE, leftPos, topPos, 0, 0, imageWidth, imageHeight, TEXTURE_DIM, TEXTURE_DIM);
     }
 
     @Override

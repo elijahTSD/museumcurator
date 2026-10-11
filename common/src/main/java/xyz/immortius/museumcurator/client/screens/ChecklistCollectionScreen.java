@@ -1,6 +1,6 @@
 package xyz.immortius.museumcurator.client.screens;
 
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
@@ -38,7 +38,7 @@ public class ChecklistCollectionScreen extends AbstractChecklistScreen {
     }
 
     @Override
-    protected void renderTooltip(GuiGraphics graphics, int mouseX, int mouseY) {
+    protected void renderTooltip(GuiGraphicsExtractor graphics, int mouseX, int mouseY) {
         if (containerWidget.isMouseOver(mouseX, mouseY)) {
             List<Component> tooltip = containerWidget.getTooltip(mouseX, mouseY);
             if (tooltip != null && !tooltip.isEmpty()) {
@@ -76,7 +76,7 @@ public class ChecklistCollectionScreen extends AbstractChecklistScreen {
         }
 
         @Override
-        public void render(GuiGraphics graphics, int top, int left, int width, int height, int mouseX, int mouseY, boolean hovered, float delta) {
+        public void extractRenderState(GuiGraphicsExtractor graphics, int top, int left, int width, int height, int mouseX, int mouseY, boolean hovered, float delta) {
             sectionWidget.setX(left);
             sectionWidget.setY(top);
             sectionWidget.setWidth(width);
