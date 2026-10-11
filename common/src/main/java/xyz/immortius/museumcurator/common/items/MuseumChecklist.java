@@ -53,7 +53,7 @@ public class MuseumChecklist extends Item implements MenuProvider {
         if (!context.isSecondaryUseActive()) {
             return InteractionResult.PASS;
         }
-        if (context.getLevel().isClientSide) {
+        if (context.getLevel().isClientSide()) {
             context.getLevel().playSound(context.getPlayer(), context.getClickedPos(), Services.PLATFORM.writingSound(), SoundSource.PLAYERS, 1.0f, 1.f);
             return InteractionResult.SUCCESS;
         }
@@ -96,7 +96,7 @@ public class MuseumChecklist extends Item implements MenuProvider {
     }
 
     public InteractionResult interact(Entity entity, Level level, Player player) {
-        if (level.isClientSide) {
+        if (level.isClientSide()) {
             level.playSound(player, entity.blockPosition(), Services.PLATFORM.writingSound(), SoundSource.PLAYERS, 1.0f, 1.f);
             return InteractionResult.SUCCESS;
         }

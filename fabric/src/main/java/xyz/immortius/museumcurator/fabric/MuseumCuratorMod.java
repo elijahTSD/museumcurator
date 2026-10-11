@@ -3,7 +3,7 @@ package xyz.immortius.museumcurator.fabric;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
-import net.fabricmc.fabric.api.itemgroup.v1.ItemGroupEvents;
+import net.fabricmc.fabric.api.creativetab.v1.CreativeModeTabEvents;
 import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
@@ -13,7 +13,7 @@ import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.ReloadableServerResources;
 import net.minecraft.server.packs.PackType;
 import net.minecraft.server.packs.resources.ResourceManager;
@@ -83,7 +83,7 @@ public class MuseumCuratorMod implements ModInitializer {
 
         MUSEUM_CHECKLIST = Registry.register(BuiltInRegistries.ITEM, createId("museumchecklist"), new MuseumChecklist(new Item.Properties().setId(ResourceKey.create(Registries.ITEM, createId("museumchecklist")))));
 
-        ItemGroupEvents.modifyEntriesEvent(CreativeModeTabs.TOOLS_AND_UTILITIES).register(content -> {
+        CreativeModeTabEvents.modifyOutputEvent(CreativeModeTabs.TOOLS_AND_UTILITIES).register(content -> {
             content.addAfter(Items.MUSIC_DISC_PIGSTEP, MUSEUM_CHECKLIST);
         });
 
@@ -95,8 +95,8 @@ public class MuseumCuratorMod implements ModInitializer {
 
         ResourceManagerHelper.get(PackType.SERVER_DATA).registerReloadListener(new SimpleSynchronousResourceReloadListener() {
             @Override
-            public ResourceLocation getFabricId() {
-                return ResourceLocation.fromNamespaceAndPath(MuseumCuratorConstants.MOD_ID, "server_data");
+            public Identifier getFabricId() {
+                return Identifier.fromNamespaceAndPath(MuseumCuratorConstants.MOD_ID, "server_data");
             }
 
             @Override
@@ -110,8 +110,8 @@ public class MuseumCuratorMod implements ModInitializer {
         new ConfigSystem().synchConfig(Paths.get("defaultconfigs", MuseumCuratorConstants.MOD_ID + ".toml"), MuseumCuratorConfig.get());
     }
 
-    private ResourceLocation createId(String id) {
-        ResourceLocation loc = ResourceLocation.fromNamespaceAndPath(MuseumCuratorConstants.MOD_ID, id);
+    private Identifier createId(String id) {
+        Identifier loc = Identifier.fromNamespaceAndPath(MuseumCuratorConstants.MOD_ID, id);
         MuseumCuratorConstants.LOGGER.info("Creating {}", loc);
         return loc;
     }
