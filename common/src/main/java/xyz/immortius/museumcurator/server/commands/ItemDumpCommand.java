@@ -34,7 +34,7 @@ public class ItemDumpCommand {
                 .requires(Commands.hasPermission(Commands.LEVEL_GAMEMASTERS))
                 .executes(ItemDumpCommand::itemDump));
         dispatcher.register(Commands.literal("museumcommand:nonCollectionItemDump")
-                .requires(x -> x.hasPermission(2))
+                .requires(Commands.hasPermission(Commands.LEVEL_GAMEMASTERS))
                 .executes(ItemDumpCommand::nonCollectionItemDump));
     }
 

@@ -160,70 +160,70 @@ public final class MuseumCollections {
         @Override
         public void visitString(StringTag tag) {
             if (target instanceof StringTag t) {
-                match = t.getAsString().equals(tag.getAsString());
+                match = t.equals(tag);
             }
         }
 
         @Override
         public void visitByte(ByteTag tag) {
             if (target instanceof NumericTag t) {
-                match = t.getAsLong() == tag.getAsLong();
+                match = t.equals(tag);
             }
         }
 
         @Override
         public void visitShort(ShortTag tag) {
             if (target instanceof NumericTag t) {
-                match = t.getAsLong() == tag.getAsLong();
+                match = t.equals(tag);
             }
         }
 
         @Override
         public void visitInt(IntTag tag) {
             if (target instanceof NumericTag t) {
-                match = t.getAsLong() == tag.getAsLong();
+                match = t.equals(tag);
             }
         }
 
         @Override
         public void visitLong(LongTag tag) {
             if (target instanceof NumericTag t) {
-                match = t.getAsLong() == tag.getAsLong();
+                match = t.equals(tag);
             }
         }
 
         @Override
         public void visitFloat(FloatTag tag) {
             if (target instanceof NumericTag t) {
-                match = (t.getAsDouble() - tag.getAsDouble()) < Mth.EPSILON;
+                match = t.equals(tag);
             }
         }
 
         @Override
         public void visitDouble(DoubleTag tag) {
             if (target instanceof NumericTag t) {
-                match = Math.abs(t.getAsDouble() - tag.getAsDouble()) < Mth.EPSILON;
+                match = Math.abst.equals(tag);
             }
         }
 
         @Override
         public void visitByteArray(ByteArrayTag tag) {
             if (target instanceof ByteArrayTag t) {
-                t.equals(tag);
+                match = t.equals(tag);
             }
         }
 
         @Override
         public void visitIntArray(IntArrayTag tag) {
             if (target instanceof IntArrayTag t) {
-                t.equals(tag);
+                match = t.equals(tag);
             }
         }
 
         @Override
         public void visitLongArray(LongArrayTag tag) {
             if (target instanceof LongArrayTag t) {
-                t.equals(tag);
+                match = t.equals(tag);
             }
         }
 
@@ -250,7 +250,7 @@ public final class MuseumCollections {
         @Override
         public void visitCompound(CompoundTag tag) {
             if (target instanceof CompoundTag t) {
-                for (String key : t.getAllKeys()) {
+                for (String key : t.keySet()) {
                     if (!IGNORE_TAGS.contains(key) && (tag.get(key) == null || !new ComparingTagVisitor(t.get(key)).isMatch(tag.get(key)))) {
                         return;
                     }

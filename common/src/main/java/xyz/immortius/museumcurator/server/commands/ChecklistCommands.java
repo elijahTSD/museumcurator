@@ -55,7 +55,7 @@ public class ChecklistCommands {
     private static int uncheckItem(CommandSourceStack source, MinecraftServer server, ItemInput item) {
         try {
             ServerPlayer player = source.getPlayerOrException();
-            ChecklistState.get(server, player).uncheck(Collections.singletonList(item.getItem().getDefaultInstance()));
+            ChecklistState.get(server, player).uncheck(Collections.singletonList(item.createItemStack(1)));
             return 1;
         } catch (CommandSyntaxException e) {
             return 0;

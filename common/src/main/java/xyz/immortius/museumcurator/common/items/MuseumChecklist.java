@@ -112,7 +112,8 @@ public class MuseumChecklist extends Item implements MenuProvider {
         } else if (entity instanceof ItemFrame itemFrame) {
             items.add(itemFrame.getItem());
         } else if (entity instanceof ArmorStand armorStand) {
-            for (ItemStack armorSlot : armorStand.getArmorSlots()) {
+            for (net.minecraft.world.entity.EquipmentSlot slot : net.minecraft.world.entity.EquipmentSlot.values()) {
+                ItemStack armorSlot = armorStand.getItemBySlot(slot);
                 if (MuseumCollections.isValidCollectionItem(armorSlot)) {
                     items.add(armorSlot);
                 }
