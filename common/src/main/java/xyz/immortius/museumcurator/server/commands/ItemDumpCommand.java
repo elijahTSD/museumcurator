@@ -11,7 +11,7 @@ import net.minecraft.commands.Commands;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.Item;
 import xyz.immortius.museumcurator.common.data.MuseumCollections;
 
@@ -41,12 +41,12 @@ public class ItemDumpCommand {
     private static int nonCollectionItemDump(CommandContext<CommandSourceStack> cmd) throws CommandSyntaxException {
         Registry<Item> registry = cmd.getSource().getServer().registryAccess().lookupOrThrow(Registries.ITEM);
 
-        Set<ResourceLocation> collectionItems = MuseumCollections.getAllCollectionItems().stream().map(registry::getKey).collect(Collectors.toSet());
-        Set<ResourceLocation> missingItems = Sets.difference(registry.keySet(), collectionItems);
+        Set<Identifier> collectionItems = MuseumCollections.getAllCollectionItems().stream().map(registry::getKey).collect(Collectors.toSet());
+        Set<Identifier> missingItems = Sets.difference(registry.keySet(), collectionItems);
 
         try (BufferedWriter writer = Files.newBufferedWriter(Paths.get("missingitems.json"))) {
             Gson gson = new Gson();
-            gson.toJson(missingItems.stream().map(ResourceLocation::toString).toList(), writer);
+            gson.toJson(missingItems.stream().map(Identifier::toString).toList(), writer);
         } catch (IOException e) {
             throw FAILED_TO_DUMP.create();
         }
@@ -60,7 +60,7 @@ public class ItemDumpCommand {
 
         try (BufferedWriter writer = Files.newBufferedWriter(Paths.get("items.json"))) {
             Gson gson = new Gson();
-            gson.toJson(registry.keySet().stream().map(ResourceLocation::toString).toList(), writer);
+            gson.toJson(registry.keySet().stream().map(Identifier::toString).toList(), writer);
         } catch (IOException e) {
             throw FAILED_TO_DUMP.create();
         }

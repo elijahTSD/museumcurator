@@ -8,7 +8,7 @@ import com.mojang.serialization.JsonOps;
 import joptsimple.internal.Strings;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.resources.RegistryOps;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.packs.resources.Resource;
 import net.minecraft.server.packs.resources.ResourceManager;
@@ -57,7 +57,7 @@ public final class ServerEventHandler {
     public static void onResourceManagerReload(ResourceManager resourceManager, RegistryAccess registryAccess) {
         List<RawExhibit> rawExhibits = new ArrayList<>();
 
-        for (Map.Entry<ResourceLocation, Resource> entry : resourceManager.listResources(MuseumCuratorConstants.EXHIBIT_DATA_PATH, r -> true).entrySet()) {
+        for (Map.Entry<Identifier, Resource> entry : resourceManager.listResources(MuseumCuratorConstants.EXHIBIT_DATA_PATH, r -> true).entrySet()) {
             try (InputStreamReader reader = new InputStreamReader(entry.getValue().open())) {
                 JsonElement jsonElement = JsonParser.parseReader(reader);
                 RawExhibit exhibit = RawExhibit.EXHIBIT_CODEC.parse(RegistryOps.create(JsonOps.INSTANCE, registryAccess), jsonElement).getOrThrow();
