@@ -1,5 +1,6 @@
 package xyz.immortius.museumcurator.client.network;
 
+import xyz.immortius.museumcurator.common.MuseumCuratorConstants;
 import xyz.immortius.museumcurator.common.data.MuseumCollections;
 import xyz.immortius.museumcurator.common.network.LogOnMessage;
 
@@ -8,6 +9,8 @@ import xyz.immortius.museumcurator.common.network.LogOnMessage;
  */
 public class LogonReceiver {
     public static void receive(LogOnMessage msg) {
+        MuseumCuratorConstants.LOGGER.info("Received {} museum collections and {} checked items from server",
+                msg.getCollections().size(), msg.getCheckedItems().size());
         MuseumCollections.setCollections(msg.getCollections());
         MuseumCollections.setCheckedItems(msg.getCheckedItems());
     }
