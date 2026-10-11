@@ -40,7 +40,7 @@ public abstract class AbstractChecklistScreen extends AbstractContainerScreen<Mu
     }
 
     @Override
-    protected void extractBackground(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float partialTick) {
+    public void extractBackground(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float partialTick) {
         graphics.blit(RenderPipelines.GUI_TEXTURED, CONTAINER_TEXTURE, leftPos, topPos,
                 0, 0, imageWidth, imageHeight, TEXTURE_DIM, TEXTURE_DIM);
     }
