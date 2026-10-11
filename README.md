@@ -1,6 +1,6 @@
 # Museum Curator
 
-This mod provides assistance with building a minecraft museum display every item available in Minecraft.
+This is an updated version of the mod Museum Curator by dividesBy0/immortius that provides assistance with building a minecraft museum to display every item available in Minecraft.
 
 ## Developing
 
