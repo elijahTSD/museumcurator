@@ -57,7 +57,10 @@ public final class ServerEventHandler {
     public static void onResourceManagerReload(ResourceManager resourceManager, RegistryAccess registryAccess) {
         List<RawExhibit> rawExhibits = new ArrayList<>();
 
-        for (Map.Entry<Identifier, Resource> entry : resourceManager.listResources(MuseumCuratorConstants.EXHIBIT_DATA_PATH, r -> true).entrySet()) {
+        Map<Identifier, Resource> exhibitResources =
+                resourceManager.listResources(MuseumCuratorConstants.EXHIBIT_DATA_PATH, r -> true);
+        MuseumCuratorConstants.LOGGER.info("Found {} museum exhibit resources", exhibitResources.size());
+        for (Map.Entry<Identifier, Resource> entry : exhibitResources.entrySet()) {
             try (InputStreamReader reader = new InputStreamReader(entry.getValue().open())) {
                 JsonElement jsonElement = JsonParser.parseReader(reader);
                 RawExhibit exhibit = RawExhibit.EXHIBIT_CODEC.parse(RegistryOps.create(JsonOps.INSTANCE, registryAccess), jsonElement).getOrThrow();
@@ -72,7 +75,8 @@ public final class ServerEventHandler {
         Collection<MuseumCollection> collections = prepareCollections(rawExhibits);
 
         MuseumCollections.setCollections(collections);
-        MuseumCuratorConstants.LOGGER.info("Loaded {} museum exhibits", rawExhibits.size());
+        MuseumCuratorConstants.LOGGER.info("Loaded {} museum exhibits across {} collections",
+                rawExhibits.size(), collections.size());
     }
 
     @NotNull
