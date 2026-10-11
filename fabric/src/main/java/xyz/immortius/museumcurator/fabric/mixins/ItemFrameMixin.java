@@ -7,6 +7,7 @@ import net.minecraft.world.entity.decoration.HangingEntity;
 import net.minecraft.world.entity.decoration.ItemFrame;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.phys.Vec3;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -24,7 +25,7 @@ public abstract class ItemFrameMixin extends HangingEntity {
     }
 
     @Inject(method="interact", at=@At("HEAD"), cancellable = true)
-    public void interact(Player player, InteractionHand interactionHand, CallbackInfoReturnable<InteractionResult> returnable) {
+    public void interact(Player player, InteractionHand interactionHand, Vec3 hitPos, CallbackInfoReturnable<InteractionResult> returnable) {
         if (player.isSecondaryUseActive() && player.getItemInHand(interactionHand).getItem() instanceof MuseumChecklist mc) {
             InteractionResult result = mc.interact(this, player.level(), player);
             returnable.setReturnValue(result);
