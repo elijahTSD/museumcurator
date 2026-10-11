@@ -1,5 +1,6 @@
 package xyz.immortius.museumcurator.client.network;
 
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.world.item.ItemStack;
 import xyz.immortius.museumcurator.common.data.MuseumCollections;
