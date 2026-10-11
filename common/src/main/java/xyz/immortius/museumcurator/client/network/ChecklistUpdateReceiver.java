@@ -1,14 +1,11 @@
 package xyz.immortius.museumcurator.client.network;
 
 import net.minecraft.client.player.LocalPlayer;
-import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
 import xyz.immortius.museumcurator.common.data.MuseumCollections;
 import xyz.immortius.museumcurator.common.network.ChecklistUpdateMessage;
 
-/**
- * Processes ChecklistUpdateMessage to update a client's checked items.
- */
+/** Processes server checklist updates on a client. */
 public class ChecklistUpdateReceiver {
     public static void receive(LocalPlayer player, ChecklistUpdateMessage msg) {
         if (msg.isClearAll()) {
@@ -16,11 +13,5 @@ public class ChecklistUpdateReceiver {
         }
         MuseumCollections.uncheckItems(msg.getUncheckedItems());
         MuseumCollections.checkItems(msg.getCheckedItems());
-        for (ItemStack item : msg.getCheckedItems()) {
-            player.displayClientMessage(Component.translatable("commands.museumcurator.checked", item.getDisplayName()), false);
-        }
-        for (ItemStack item : msg.getUncheckedItems()) {
-            player.displayClientMessage(Component.translatable("commands.museumcurator.unchecked", item.getDisplayName()), false);
-        }
     }
 }
